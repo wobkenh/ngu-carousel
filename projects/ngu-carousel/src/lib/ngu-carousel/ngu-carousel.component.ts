@@ -30,12 +30,7 @@ import {
 } from '@angular/core';
 import { EMPTY, fromEvent, interval, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { mapTo, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import {
-  NguCarouselDefDirective,
-  NguCarouselNextDirective,
-  NguCarouselOutlet,
-  NguCarouselPrevDirective
-} from './../ngu-carousel.directive';
+import { NguCarouselDefDirective, NguCarouselNextDirective, NguCarouselOutlet, NguCarouselPrevDirective } from '../ngu-carousel.directive';
 import { NguCarouselConfig, NguCarouselOutletContext, NguCarouselStore } from './ngu-carousel';
 
 // @dynamic
@@ -78,6 +73,7 @@ export class NguCarousel<T> extends NguCarouselStore
   get dataSource(): any {
     return this._dataSource;
   }
+
   set dataSource(data: any) {
     if (data) {
       this._switchDataSource(data);
@@ -146,12 +142,14 @@ export class NguCarousel<T> extends NguCarouselStore
   get trackBy(): TrackByFunction<T> {
     return this._trackByFn;
   }
+
   set trackBy(fn: TrackByFunction<T>) {
     if (isDevMode() && fn != null && typeof fn !== 'function' && console && console.warn) {
       console.warn(`trackBy must be a function, but received ${JSON.stringify(fn)}.`);
     }
     this._trackByFn = fn;
   }
+
   private _trackByFn: TrackByFunction<T>;
 
   constructor(
@@ -207,7 +205,9 @@ export class NguCarousel<T> extends NguCarouselStore
     data: any[],
     viewContainer: ViewContainerRef = this._nodeOutlet.viewContainer
   ) {
-    if (!this.arrayChanges) return;
+    if (!this.arrayChanges) {
+      return;
+    }
 
     this.arrayChanges.forEachOperation(
       (item: IterableChangeRecord<any>, adjustedPreviousIndex: number, currentIndex: number) => {
@@ -255,10 +255,7 @@ export class NguCarousel<T> extends NguCarouselStore
       return this._defDirec.first;
     }
 
-    const nodeDef =
-      this._defDirec.find(def => def.when && def.when(i, data)) || this._defaultNodeDef;
-
-    return nodeDef;
+    return this._defDirec.find(def => def.when && def.when(i, data)) || this._defaultNodeDef;
   }
 
   ngAfterViewInit() {
@@ -290,7 +287,7 @@ export class NguCarousel<T> extends NguCarouselStore
     this.loop = this.inputs.loop || false;
     this.inputs.easing = this.inputs.easing || 'cubic-bezier(0, 0, 0.2, 1)';
     this.touch.active = this.inputs.touch || false;
-    this.RTL = this.inputs.RTL ? true : false;
+    this.RTL = this.inputs.RTL;
     this.interval = this.inputs.interval || null;
     this.velocity = typeof this.inputs.velocity === 'number' ? this.inputs.velocity : this.velocity;
 
@@ -401,7 +398,7 @@ export class NguCarousel<T> extends NguCarouselStore
     valt =
       this.type === 'responsive'
         ? (Math.abs(ev - this.dexVal) /
-          (this.vertical.enabled ? this.vertical.height : this.carouselWidth)) *
+        (this.vertical.enabled ? this.vertical.height : this.carouselWidth)) *
         100
         : valt;
     this.dexVal = ev;
@@ -456,10 +453,10 @@ export class NguCarousel<T> extends NguCarouselStore
         this.deviceWidth >= 1200
           ? 'lg'
           : this.deviceWidth >= 992
-            ? 'md'
-            : this.deviceWidth >= 768
-              ? 'sm'
-              : 'xs';
+          ? 'md'
+          : this.deviceWidth >= 768
+            ? 'sm'
+            : 'xs';
 
       this.items = this.inputs.grid[this.deviceType];
       this.itemWidth = this.carouselWidth / this.items;
@@ -557,13 +554,13 @@ export class NguCarousel<T> extends NguCarouselStore
     let itemStyle = '';
     if (this.vertical.enabled) {
       const itemWidthXS = `${this.styleid} > .item {height: ${this.vertical.height /
-        +this.inputs.grid.xs}px}`;
+      +this.inputs.grid.xs}px}`;
       const itemWidthSM = `${this.styleid} > .item {height: ${this.vertical.height /
-        +this.inputs.grid.sm}px}`;
+      +this.inputs.grid.sm}px}`;
       const itemWidthMD = `${this.styleid} > .item {height: ${this.vertical.height /
-        +this.inputs.grid.md}px}`;
+      +this.inputs.grid.md}px}`;
       const itemWidthLG = `${this.styleid} > .item {height: ${this.vertical.height /
-        +this.inputs.grid.lg}px}`;
+      +this.inputs.grid.lg}px}`;
 
       itemStyle = `@media (max-width:767px){${itemWidthXS}}
                     @media (min-width:768px){${itemWidthSM}}
@@ -578,11 +575,11 @@ export class NguCarousel<T> extends NguCarouselStore
           +this.inputs.grid.xs}%;}`;
 
       const itemWidthSM = `${this.styleid} > .item {flex: 0 0 ${100 /
-        +this.inputs.grid.sm}%; width: ${100 / +this.inputs.grid.sm}%}`;
+      +this.inputs.grid.sm}%; width: ${100 / +this.inputs.grid.sm}%}`;
       const itemWidthMD = `${this.styleid} > .item {flex: 0 0 ${100 /
-        +this.inputs.grid.md}%; width: ${100 / +this.inputs.grid.md}%}`;
+      +this.inputs.grid.md}%; width: ${100 / +this.inputs.grid.md}%}`;
       const itemWidthLG = `${this.styleid} > .item {flex: 0 0 ${100 /
-        +this.inputs.grid.lg}%; width: ${100 / +this.inputs.grid.lg}%}`;
+      +this.inputs.grid.lg}%; width: ${100 / +this.inputs.grid.lg}%}`;
 
       itemStyle = `@media (max-width:767px){${itemWidthXS}}
                     @media (min-width:768px){${itemWidthSM}}
@@ -682,13 +679,13 @@ export class NguCarousel<T> extends NguCarouselStore
         `transform ${itemSpeed}ms ${this.inputs.easing}`
       );
       this.inputs.animation &&
-        this._carouselAnimator(
-          Btn,
-          currentSlide + 1,
-          currentSlide + this.items,
-          itemSpeed,
-          Math.abs(this.currentSlide - currentSlide)
-        );
+      this._carouselAnimator(
+        Btn,
+        currentSlide + 1,
+        currentSlide + this.items,
+        itemSpeed,
+        Math.abs(this.currentSlide - currentSlide)
+      );
     } else {
       this._setStyle(this.nguItemsContainer.nativeElement, 'transition', ``);
     }
@@ -742,7 +739,7 @@ export class NguCarousel<T> extends NguCarouselStore
   private _carouselLoadTrigger(): void {
     if (typeof this.inputs.load === 'number') {
       this.dataSource.length - this.load <= this.currentSlide + this.items &&
-        this.carouselLoad.emit(this.currentSlide);
+      this.carouselLoad.emit(this.currentSlide);
     }
   }
 
