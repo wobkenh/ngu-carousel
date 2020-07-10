@@ -17,5 +17,8 @@
     "angular universal",
     "universal carousel",
     "ngu carousel"
-  ]
+  ],
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
 }
